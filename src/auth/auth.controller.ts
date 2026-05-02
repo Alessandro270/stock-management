@@ -1,6 +1,7 @@
 import { Body, Controller, Post, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
+import { CreateUserDto } from 'src/user/dto/create-user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -10,6 +11,13 @@ export class AuthController {
   async login(@Body() dto: LoginDto) {
     const token = await this.service.login(dto);
     if (!token) throw new UnauthorizedException('Invalid credentials');
-    return token;
+    return { token };
+  }
+
+  @Post('signup')
+  async signup(@Body() dto: CreateUserDto) {
+    const result = await this.service.signup(dto);
+    if (!result) throw new UnauthorizedException('Email already in use');
+    return result;
   }
 }

@@ -18,6 +18,7 @@ export class GenericService<T extends ObjectLiteral> {
   findOneBy(filter: Record<string, any>): Promise<ObjectLiteral | null> {
     return this.repository.findOneBy({ ...filter } as any);
   }
+  
   async update(id: string, data: Partial<T>): Promise<ObjectLiteral | null> {
     await this.repository.update(id, data);
     return this.findOne(id);
