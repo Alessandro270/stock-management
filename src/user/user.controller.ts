@@ -11,7 +11,7 @@ export class UserController {
   }
 
   @Get(':id')
-  findOne(@Param(ParseUUIDPipe) id: string) {
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.findOne(id);
   }
 }
