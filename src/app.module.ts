@@ -7,6 +7,8 @@ import { UserModule } from './user/user.module';
 import { DatabaseModule } from './database/database.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { APP_GUARD } from '@nestjs/core';
+import { ProductModule } from './product/product.module';
+import { StockModule } from './stock/stock.module';
 
 @Module({
   imports: [
@@ -17,6 +19,8 @@ import { APP_GUARD } from '@nestjs/core';
     AuthModule,
     UserModule,
     DatabaseModule,
+    ProductModule,
+    StockModule,
   ],
   controllers: [AppController],
   providers: [
