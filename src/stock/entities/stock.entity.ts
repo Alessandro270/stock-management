@@ -1,6 +1,7 @@
 import { GenericEntity } from 'src/generic/generic.entity';
 import { Product } from 'src/product/entities/product.entity';
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { Warehouse } from 'src/warehouse/entities/warehouse.entity';
+import { Column, Entity, ManyToOne } from 'typeorm';
 
 @Entity()
 export class Stock extends GenericEntity {
@@ -16,7 +17,9 @@ export class Stock extends GenericEntity {
   @Column()
   reorderQuantity: number;
 
-  @OneToOne(() => Product, (product) => product.stock)
-  @JoinColumn()
+  @ManyToOne(() => Product, (product) => product.stocks)
   product: Product;
+
+  @ManyToOne(() => Warehouse, (warehouse) => warehouse.stocks)
+  warehouse: Warehouse;
 }
