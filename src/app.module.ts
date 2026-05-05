@@ -9,6 +9,13 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { ProductModule } from './product/product.module';
 import { StockModule } from './stock/stock.module';
+import { SupplierModule } from './supplier/supplier.module';
+import { OrderModule } from './order/order.module';
+import { CustomerModule } from './customer/customer.module';
+import { DeliveryModule } from './delivery/delivery.module';
+import { TransferModule } from './transfer/transfer.module';
+import { LocationModule } from './location/location.module';
+import { WarehouseModule } from './warehouse/warehouse.module';
 
 @Module({
   imports: [
@@ -21,6 +28,13 @@ import { StockModule } from './stock/stock.module';
     DatabaseModule,
     ProductModule,
     StockModule,
+    SupplierModule,
+    OrderModule,
+    CustomerModule,
+    DeliveryModule,
+    TransferModule,
+    LocationModule,
+    WarehouseModule,
   ],
   controllers: [AppController],
   providers: [

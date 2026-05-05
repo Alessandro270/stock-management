@@ -1,5 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { DeepPartial, ObjectLiteral, Repository } from 'typeorm';
+import {
+  DeepPartial,
+  FindOptionsWhere,
+  ObjectLiteral,
+  Repository,
+} from 'typeorm';
 
 @Injectable()
 export class GenericService<T extends ObjectLiteral> {
@@ -15,10 +20,23 @@ export class GenericService<T extends ObjectLiteral> {
   findOne(id: string): Promise<ObjectLiteral | null> {
     return this.repository.findOneBy({ id } as any);
   }
+
   findOneBy(filter: Record<string, any>): Promise<ObjectLiteral | null> {
     return this.repository.findOneBy({ ...filter } as any);
   }
-  
+
+  findOneWithRelations(
+    filter: Record<string, any>,
+    relations: string[],
+  ): Promise<ObjectLiteral | null> {
+    const query = this.repository.createQueryBuilder('entity');
+    relations.forEach((relation) => {
+      query.leftJoinAndSelect(`entity.${relation}`, relation);
+    });
+    console.log('here');
+    return query.where(filter).getOne();
+  }
+
   async update(id: string, data: Partial<T>): Promise<ObjectLiteral | null> {
     await this.repository.update(id, data);
     return this.findOne(id);

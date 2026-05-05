@@ -28,7 +28,7 @@ export class ProductController {
 
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.productService.findOne(id);
+    return this.productService.findOneWithRelations({ id }, ['stock']);
   }
 
   @Patch(':id')
