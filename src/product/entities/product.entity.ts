@@ -1,10 +1,10 @@
+import { Category } from 'src/category/entities/category.entity';
 import { DeliveryDetail } from 'src/delivery/entities/delivery-details.entity';
-import { Delivery } from 'src/delivery/entities/delivery.entity';
 import { GenericEntity } from 'src/generic/generic.entity';
 import { OrderDetail } from 'src/order/entities/order-detail.entity';
 import { Stock } from 'src/stock/entities/stock.entity';
 import { Transfer } from 'src/transfer/entities/transfer.entity';
-import { Column, Entity, OneToMany, OneToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 
 @Entity()
 export class Product extends GenericEntity {
@@ -16,9 +16,6 @@ export class Product extends GenericEntity {
 
   @Column()
   unitPrice: number;
-
-  @Column()
-  category: string;
 
   @Column()
   sku: string;
@@ -40,6 +37,9 @@ export class Product extends GenericEntity {
 
   @OneToMany(() => Stock, (stock) => stock.product)
   stocks: Stock[];
+
+  @ManyToOne(() => Category, (category) => category.products)
+  category: Category;
 
   @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.product)
   orderDetails: OrderDetail[];

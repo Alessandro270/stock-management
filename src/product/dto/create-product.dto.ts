@@ -23,7 +23,8 @@ export class CreateProductDto {
 
   @IsNotEmpty()
   @IsString()
-  category: string;
+  @IsUUID()
+  categoryId: string;
 
   @IsNotEmpty()
   @IsString()

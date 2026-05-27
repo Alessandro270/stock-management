@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from 'src/user/user.entity';
 
 @Module({
   imports: [
@@ -21,7 +20,6 @@ import { User } from 'src/user/user.entity';
         synchronize: true,
       }),
     }),
-    TypeOrmModule.forFeature([User]),
   ],
 })
 export class DatabaseModule {}

@@ -16,6 +16,7 @@ import { DeliveryModule } from './delivery/delivery.module';
 import { TransferModule } from './transfer/transfer.module';
 import { LocationModule } from './location/location.module';
 import { WarehouseModule } from './warehouse/warehouse.module';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { WarehouseModule } from './warehouse/warehouse.module';
       envFilePath: '.env',
     }),
     AuthModule,
+    CategoryModule,
     UserModule,
     DatabaseModule,
     ProductModule,
