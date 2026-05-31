@@ -18,7 +18,7 @@ export class UserService extends GenericService<User> {
   ): Promise<ObjectLiteral | null> {
     const queryBuilder = this.repository.createQueryBuilder('user');
     return queryBuilder
-      .addSelect(['user.password'])
+      .addSelect(['user.password', 'user.refreshToken'])
       .where({ ...filter })
       .getOne();
   }

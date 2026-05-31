@@ -9,6 +9,7 @@ import { UserService } from './user.service';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from 'src/common/enums/role.enum';
 import { RolesGuard } from 'src/common/guards/roles.guard';
+import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 
 @Controller('user')
 @UseGuards(RolesGuard)
@@ -19,6 +20,11 @@ export class UserController {
   @Get()
   findAll() {
     return this.service.findAll();
+  }
+
+  @Get('me')
+  getUser(@CurrentUser() user: any) {
+    return this.service.findOne(user.id);
   }
 
   @Roles(Role.ADMIN)

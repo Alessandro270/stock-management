@@ -18,4 +18,7 @@ export class User extends GenericEntity {
 
   @Column({ type: 'enum', enum: Role, default: Role.USER })
   role: Role;
+
+  @Column({ nullable: true, select: false })
+  refreshToken: string;
 }

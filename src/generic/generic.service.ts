@@ -10,9 +10,10 @@ import {
 export class GenericService<T extends ObjectLiteral> {
   constructor(protected readonly repository: Repository<T>) {}
 
-  create(data: DeepPartial<T>): Promise<ObjectLiteral> {
+  async create(data: DeepPartial<T>): Promise<ObjectLiteral> {
     const entity = this.repository.create(data);
-    return this.repository.save(entity);
+    await this.repository.save(entity);
+    return entity;
   }
   findAll(): Promise<ObjectLiteral[]> | [] {
     return this.repository.find();
@@ -30,7 +31,7 @@ export class GenericService<T extends ObjectLiteral> {
     relations: string[],
   ): Promise<ObjectLiteral | null> {
     const query = this.repository.createQueryBuilder('entity');
-    relations.forEach((relation) => {
+    relations.forEach(relation => {
       query.leftJoinAndSelect(`entity.${relation}`, relation);
     });
     console.log('here');

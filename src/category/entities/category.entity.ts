@@ -7,7 +7,7 @@ export class Category extends GenericEntity {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ type: 'text', nullable: true })
   description: string;
 
   @OneToMany(() => Product, (product) => product.category)

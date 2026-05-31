@@ -1,8 +1,16 @@
-import { Body, Controller, Post, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Post,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { Public } from 'src/common/decorators/public.decorator';
+import { ValidateTokenDto } from './dto/validate-token.dto';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -11,15 +19,32 @@ export class AuthController {
   @Public()
   @Post('login')
   async login(@Body() dto: LoginDto) {
-    const token = await this.service.login(dto);
-    if (!token) throw new UnauthorizedException('Invalid credentials');
-    return { token };
+    const payload = await this.service.login(dto);
+    if (!payload) throw new UnauthorizedException('Invalid credentials');
+    return payload;
   }
 
+  @Public()
   @Post('signup')
   async signup(@Body() dto: CreateUserDto) {
     const result = await this.service.signup(dto);
     if (!result) throw new UnauthorizedException('Email already in use');
+    return result;
+  }
+
+  @Public()
+  @Post('validate-token')
+  async validateToken(@Body() dto: ValidateTokenDto) {
+    const result = this.service.validateToken(dto);
+    if (!result) throw new BadRequestException('Invalid Token');
+    return result;
+  }
+
+  @Public()
+  @Post('refresh')
+  async refresh(@Body() dto: RefreshTokenDto) {
+    const result = this.service.refreshToken(dto);
+    if (!result) throw new BadRequestException('Invalid Token');
     return result;
   }
 }

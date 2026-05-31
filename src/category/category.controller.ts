@@ -11,6 +11,8 @@ import {
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { Role } from 'src/common/enums/role.enum';
+import { Roles } from 'src/common/decorators/roles.decorator';
 
 @Controller('category')
 export class CategoryController {
@@ -31,6 +33,7 @@ export class CategoryController {
     return this.categoryService.findOne(id);
   }
 
+  @Roles(Role.ADMIN)
   @Patch(':id')
   update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -39,6 +42,7 @@ export class CategoryController {
     return this.categoryService.update(id, updateCategoryDto);
   }
 
+  @Roles(Role.ADMIN)
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.categoryService.remove(id);
