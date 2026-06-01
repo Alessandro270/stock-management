@@ -3,6 +3,7 @@ import { DeliveryDetail } from 'src/delivery/entities/delivery-details.entity';
 import { GenericEntity } from 'src/generic/generic.entity';
 import { OrderDetail } from 'src/order/entities/order-detail.entity';
 import { Stock } from 'src/stock/entities/stock.entity';
+import { Supplier } from 'src/supplier/entities/supplier.entity';
 import { Transfer } from 'src/transfer/entities/transfer.entity';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 
@@ -11,17 +12,11 @@ export class Product extends GenericEntity {
   @Column()
   name: string;
 
-  @Column()
-  description: string;
+  @ManyToOne(() => Supplier, supplier => supplier.products)
+  supplier: Supplier;
 
-  @Column()
-  unitPrice: number;
-
-  @Column()
-  sku: string;
-
-  @Column()
-  weight: number;
+  @ManyToOne(() => Category, category => category.products, { nullable: false })
+  category: Category;
 
   @Column()
   height: number;
@@ -30,23 +25,38 @@ export class Product extends GenericEntity {
   width: number;
 
   @Column()
-  refrigerated: boolean;
+  length: number;
+
+  @Column()
+  weight: number;
 
   @Column({ nullable: true })
   expiresAt: Date;
 
-  @OneToMany(() => Stock, (stock) => stock.product)
+  @Column()
+  purchasePrice: number;
+
+  @Column()
+  salePrice: number;
+
+  @Column()
+  description: string;
+
+  @Column()
+  refrigerated: boolean;
+
+  @Column({ nullable: true })
+  sku: string;
+
+  @OneToMany(() => Stock, stock => stock.product)
   stocks: Stock[];
 
-  @ManyToOne(() => Category, (category) => category.products)
-  category: Category;
-
-  @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.product)
+  @OneToMany(() => OrderDetail, orderDetail => orderDetail.product)
   orderDetails: OrderDetail[];
 
-  @OneToMany(() => DeliveryDetail, (deliveryDetails) => deliveryDetails.product)
+  @OneToMany(() => DeliveryDetail, deliveryDetails => deliveryDetails.product)
   deliveryDetails: DeliveryDetail[];
 
-  @OneToMany(() => Transfer, (transfer) => transfer.product)
+  @OneToMany(() => Transfer, transfer => transfer.product)
   transfers: Transfer[];
 }

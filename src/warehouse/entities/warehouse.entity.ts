@@ -12,23 +12,29 @@ export class Warehouse extends GenericEntity {
   name: string;
 
   @Column()
+  email: string;
+
+  @Column()
   refrigerated: boolean;
 
-  @ManyToOne(() => Location, (location) => location.warehouses)
-  location: Location;
+  @Column()
+  address: string;
 
-  @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.product)
+  @Column()
+  capacity: number;
+
+  @OneToMany(() => OrderDetail, orderDetail => orderDetail.product)
   orderDetails: OrderDetail[];
 
-  @OneToMany(() => DeliveryDetail, (deliveryDetail) => deliveryDetail.product)
+  @OneToMany(() => DeliveryDetail, deliveryDetail => deliveryDetail.product)
   deliveryDetails: DeliveryDetail[];
 
-  @OneToMany(() => Stock, (stock) => stock.warehouse)
+  @OneToMany(() => Stock, stock => stock.warehouse)
   stocks: Stock[];
 
-  @OneToMany(() => Transfer, (transfer) => transfer.sourceWarehouse)
+  @OneToMany(() => Transfer, transfer => transfer.sourceWarehouse)
   sourceTransfers: Transfer[];
 
-  @OneToMany(() => Transfer, (transfer) => transfer.destinationWarehouse)
+  @OneToMany(() => Transfer, transfer => transfer.destinationWarehouse)
   destinationTransfers: Transfer[];
 }

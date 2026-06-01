@@ -13,22 +13,18 @@ export class CreateProductDto {
   @IsNotEmpty()
   name: string;
 
+  @IsUUID()
+  @IsString()
+  supplierId: string;
+
   @IsString()
   @IsOptional()
   description: string;
 
   @IsNotEmpty()
-  @IsNumber()
-  unitPrice: number;
-
-  @IsNotEmpty()
   @IsString()
   @IsUUID()
   categoryId: string;
-
-  @IsNotEmpty()
-  @IsString()
-  sku: string;
 
   @IsOptional()
   @IsNumber()
@@ -49,8 +45,4 @@ export class CreateProductDto {
   @IsDateString()
   @IsOptional()
   expiresAt: Date;
-
-  @IsUUID()
-  @IsOptional()
-  stockId: string;
 }

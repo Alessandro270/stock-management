@@ -5,10 +5,10 @@ import { Product } from 'src/product/entities/product.entity';
 
 @Entity()
 export class OrderDetail extends GenericEntity {
-  @ManyToOne(() => Order, (order) => order.details)
+  @ManyToOne(() => Order, order => order.details)
   order: Order;
 
-  @ManyToOne(() => Product, (product) => product.orderDetails)
+  @ManyToOne(() => Product, product => product.orderDetails)
   product: Product;
 
   @Column()
@@ -16,10 +16,4 @@ export class OrderDetail extends GenericEntity {
 
   @Column()
   price: number;
-
-  @Column()
-  expectedDate: Date;
-
-  @Column()
-  actualDate: Date;
 }

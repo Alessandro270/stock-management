@@ -1,4 +1,12 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsEmail,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+} from 'class-validator';
 
 export class CreateWarehouseDto {
   @IsString()
@@ -6,6 +14,20 @@ export class CreateWarehouseDto {
   name: string;
 
   @IsString()
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+
+  @IsBoolean()
   @IsNotEmpty()
   refrigerated: boolean;
+
+  @IsString()
+  @IsOptional()
+  address: string;
+
+  @IsNumber()
+  @IsPositive()
+  @IsNotEmpty()
+  capacity: number;
 }

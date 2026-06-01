@@ -35,7 +35,7 @@ export class AuthController {
   @Public()
   @Post('validate-token')
   async validateToken(@Body() dto: ValidateTokenDto) {
-    const result = this.service.validateToken(dto);
+    const result = await this.service.validateToken(dto);
     if (!result) throw new BadRequestException('Invalid Token');
     return result;
   }
@@ -43,8 +43,8 @@ export class AuthController {
   @Public()
   @Post('refresh')
   async refresh(@Body() dto: RefreshTokenDto) {
-    const result = this.service.refreshToken(dto);
-    if (!result) throw new BadRequestException('Invalid Token');
-    return result;
+    const token = await this.service.refreshToken(dto);
+    if (!token) throw new BadRequestException('Invalid Token');
+    return { token };
   }
 }

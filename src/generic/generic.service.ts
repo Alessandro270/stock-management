@@ -15,8 +15,8 @@ export class GenericService<T extends ObjectLiteral> {
     await this.repository.save(entity);
     return entity;
   }
-  findAll(): Promise<ObjectLiteral[]> | [] {
-    return this.repository.find();
+  findAll(relations?: string[] | []): Promise<ObjectLiteral[]> | [] {
+    return this.repository.find({ relations });
   }
   findOne(id: string): Promise<ObjectLiteral | null> {
     return this.repository.findOneBy({ id } as any);
@@ -34,7 +34,6 @@ export class GenericService<T extends ObjectLiteral> {
     relations.forEach(relation => {
       query.leftJoinAndSelect(`entity.${relation}`, relation);
     });
-    console.log('here');
     return query.where(filter).getOne();
   }
 

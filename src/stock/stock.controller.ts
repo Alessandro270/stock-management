@@ -23,7 +23,7 @@ export class StockController {
 
   @Get()
   findAll() {
-    return this.stockService.findAll();
+    return this.stockService.findAll(['product']);
   }
 
   @Get(':id')

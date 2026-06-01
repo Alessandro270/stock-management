@@ -1,7 +1,11 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsUUID } from 'class-validator';
-import { Entity } from 'typeorm';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 
-@Entity()
 export class CreateStockDto {
   @IsNumber()
   @IsOptional()
@@ -20,6 +24,12 @@ export class CreateStockDto {
   reorderQuantity: number;
 
   @IsUUID()
+  @IsString()
   @IsNotEmpty()
   productId: string;
+
+  @IsUUID()
+  @IsString()
+  @IsNotEmpty()
+  warehouseId: string;
 }

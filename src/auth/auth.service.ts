@@ -23,19 +23,19 @@ export class AuthService {
     return await bcrypt.hash(password, 12);
   }
   async refreshToken(dto: RefreshTokenDto) {
-    try {
-      const payload = await this.jwtService.verifyAsync(dto.refreshToken);
-      const user = await this.userService.findOneBy(payload.sub);
-      if (!user) return null;
-      if (user.refreshToken !== dto.refreshToken)
-        throw new BadRequestException('Token invalido');
-      return await this.jwtService.signAsync({
-        sub: user.id,
-        email: user.email,
-      });
-    } catch (e) {
-      throw new InternalServerErrorException();
-    }
+    const payload = await this.jwtService.verifyAsync(dto.refreshToken);
+    const user = await this.userService.findOneWithPassword({
+      id: payload.sub,
+    });
+
+    if (!user) return null;
+
+    if (user.refreshToken !== dto.refreshToken)
+      throw new BadRequestException('Token invalido');
+    return await this.jwtService.signAsync({
+      sub: user.id,
+      email: user.email,
+    });
   }
 
   async validateToken(dto: ValidateTokenDto) {
@@ -61,6 +61,7 @@ export class AuthService {
       );
       await this.userService.update(user.id, { refreshToken });
     }
+
     const token = await this.jwtService.signAsync({
       sub: user.id,
       email: user.email,

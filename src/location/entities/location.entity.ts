@@ -9,7 +9,4 @@ export class Location extends GenericEntity {
 
   @Column()
   address: string;
-
-  @OneToMany(() => Warehouse, (warehouse) => warehouse.location)
-  warehouses: Warehouse[];
 }
