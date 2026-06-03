@@ -2,22 +2,22 @@ import { GenericEntity } from 'src/generic/generic.entity';
 import { Entity, ManyToOne, OneToMany, Column } from 'typeorm';
 import { OrderDetail } from './order-detail.entity';
 import { Supplier } from 'src/supplier/entities/supplier.entity';
-import { Customer } from 'src/customer/entities/customer.entity';
+import { OrderStatus } from 'src/common/enums/order-status.dto';
 
-@Entity()
+@Entity('orders')
 export class Order extends GenericEntity {
-  @OneToMany(() => OrderDetail, detail => detail.order)
+  @OneToMany(() => OrderDetail, detail => detail.order, { onDelete: 'CASCADE' })
   details: OrderDetail[];
 
   @ManyToOne(() => Supplier, supplier => supplier.orders)
-  supplier?: Supplier;
-
-  @ManyToOne(() => Customer, customer => customer.orders)
-  customer?: Customer;
+  supplier: Supplier;
 
   @Column()
   expectedDate: Date;
 
-  @Column()
+  @Column({ nullable: true })
   actualDate: Date;
+
+  @Column({ type: 'enum', enum: OrderStatus, default: OrderStatus.PENDING })
+  status: OrderStatus;
 }

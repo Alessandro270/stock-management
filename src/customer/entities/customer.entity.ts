@@ -13,7 +13,4 @@ export class Customer extends GenericEntity {
 
   @OneToMany(() => Delivery, delivery => delivery.customer)
   deliveries: Delivery[];
-
-  @OneToMany(() => Order, order => order.customer)
-  orders: Order[];
 }

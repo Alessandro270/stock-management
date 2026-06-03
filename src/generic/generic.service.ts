@@ -41,6 +41,7 @@ export class GenericService<T extends ObjectLiteral> {
     await this.repository.update(id, data);
     return this.findOne(id);
   }
+
   async remove(id: string): Promise<ObjectLiteral> {
     return await this.repository.delete(id);
   }

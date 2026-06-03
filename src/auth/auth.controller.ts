@@ -11,6 +11,8 @@ import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { Public } from 'src/common/decorators/public.decorator';
 import { ValidateTokenDto } from './dto/validate-token.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { Role } from 'src/common/enums/role.enum';
 
 @Controller('auth')
 export class AuthController {
@@ -24,7 +26,7 @@ export class AuthController {
     return payload;
   }
 
-  @Public()
+  @Roles(Role.ADMIN)
   @Post('signup')
   async signup(@Body() dto: CreateUserDto) {
     const result = await this.service.signup(dto);

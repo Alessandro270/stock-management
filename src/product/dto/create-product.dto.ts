@@ -14,17 +14,18 @@ export class CreateProductDto {
   name: string;
 
   @IsUUID()
+  @IsNotEmpty()
   @IsString()
   supplierId: string;
-
-  @IsString()
-  @IsOptional()
-  description: string;
 
   @IsNotEmpty()
   @IsString()
   @IsUUID()
   categoryId: string;
+
+  @IsString()
+  @IsOptional()
+  description: string;
 
   @IsOptional()
   @IsNumber()

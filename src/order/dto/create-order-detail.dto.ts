@@ -6,20 +6,19 @@ import {
   IsUUID,
 } from 'class-validator';
 
-export class CreateOrderDetailsDto {
+export class CreateOrderDetailDto {
   @IsUUID()
   @IsNotEmpty()
   @IsString()
+  orderId: string;
+
+  @IsUUID()
   @IsNotEmpty()
-  productId: string;
+  @IsString()
+  product: string;
 
   @IsNumber()
   @IsPositive()
   @IsNotEmpty()
   quantity: number;
-
-  @IsNumber()
-  @IsPositive()
-  @IsNotEmpty()
-  price: number;
 }

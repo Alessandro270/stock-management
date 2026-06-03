@@ -1,19 +1,21 @@
 import { Order } from './order.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { GenericEntity } from 'src/generic/generic.entity';
-import { Product } from 'src/product/entities/product.entity';
 
 @Entity()
 export class OrderDetail extends GenericEntity {
   @ManyToOne(() => Order, order => order.details)
   order: Order;
 
-  @ManyToOne(() => Product, product => product.orderDetails)
-  product: Product;
-
   @Column()
+  product: string;
+
+  @Column({ default: 0 })
   quantity: number;
 
-  @Column()
+  @Column({ default: 0 })
   price: number;
+
+  @Column({ default: 0 })
+  total: number;
 }
