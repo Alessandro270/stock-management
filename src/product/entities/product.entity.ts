@@ -1,7 +1,7 @@
 import { Category } from 'src/category/entities/category.entity';
 import { DeliveryDetail } from 'src/delivery/entities/delivery-details.entity';
 import { GenericEntity } from 'src/generic/generic.entity';
-import { OrderDetail } from 'src/order/entities/order-detail.entity';
+import { Order } from 'src/order/entities/order.entity';
 import { Stock } from 'src/stock/entities/stock.entity';
 import { Supplier } from 'src/supplier/entities/supplier.entity';
 import { Transfer } from 'src/transfer/entities/transfer.entity';
@@ -14,6 +14,9 @@ export class Product extends GenericEntity {
 
   @ManyToOne(() => Supplier, supplier => supplier.products)
   supplier: Supplier;
+
+  @OneToMany(() => Order, order => order.product)
+  orders: Order[];
 
   @ManyToOne(() => Category, category => category.products, { nullable: false })
   category: Category;
@@ -50,9 +53,6 @@ export class Product extends GenericEntity {
 
   @OneToMany(() => Stock, stock => stock.product)
   stocks: Stock[];
-
-  @OneToMany(() => OrderDetail, orderDetail => orderDetail.product)
-  orderDetails: OrderDetail[];
 
   @OneToMany(() => DeliveryDetail, deliveryDetails => deliveryDetails.product)
   deliveryDetails: DeliveryDetail[];

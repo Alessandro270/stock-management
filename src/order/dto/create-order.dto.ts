@@ -1,20 +1,17 @@
+import { Type } from 'class-transformer';
 import {
-  ArrayMinSize,
-  IsArray,
   IsDateString,
+  IsEnum,
   IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsPositive,
   IsString,
   IsUUID,
-  ValidateNested,
 } from 'class-validator';
-import { CreateOrderDetailDto } from './create-order-detail.dto';
+import { OrderStatus } from 'src/common/enums/order-status.dto';
 
 export class CreateOrderDto {
-  @IsArray()
-  @ArrayMinSize(1)
-  @ValidateNested({ each: true })
-  details: CreateOrderDetailDto[];
-
   @IsUUID()
   @IsString()
   @IsNotEmpty()
@@ -23,4 +20,23 @@ export class CreateOrderDto {
   @IsDateString()
   @IsNotEmpty()
   expectedDate: Date;
+
+  @IsUUID()
+  @IsString()
+  @IsNotEmpty()
+  productId: string;
+
+  @IsOptional()
+  @IsDateString()
+  actualDate: Date;
+
+  @IsOptional()
+  @IsEnum(OrderStatus)
+  status: OrderStatus;
+
+  @IsNumber()
+  @IsPositive()
+  @IsNotEmpty()
+  @Type(() => Number)
+  quantity: number;
 }

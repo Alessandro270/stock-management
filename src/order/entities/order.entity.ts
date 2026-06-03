@@ -1,16 +1,16 @@
 import { GenericEntity } from 'src/generic/generic.entity';
-import { Entity, ManyToOne, OneToMany, Column } from 'typeorm';
-import { OrderDetail } from './order-detail.entity';
+import { Entity, ManyToOne, Column } from 'typeorm';
 import { Supplier } from 'src/supplier/entities/supplier.entity';
 import { OrderStatus } from 'src/common/enums/order-status.dto';
+import { Product } from 'src/product/entities/product.entity';
 
 @Entity('orders')
 export class Order extends GenericEntity {
-  @OneToMany(() => OrderDetail, detail => detail.order, { onDelete: 'CASCADE' })
-  details: OrderDetail[];
-
   @ManyToOne(() => Supplier, supplier => supplier.orders)
   supplier: Supplier;
+
+  @ManyToOne(() => Product, product => product.orders)
+  product: Product;
 
   @Column()
   expectedDate: Date;
@@ -20,4 +20,19 @@ export class Order extends GenericEntity {
 
   @Column({ type: 'enum', enum: OrderStatus, default: OrderStatus.PENDING })
   status: OrderStatus;
+
+  @Column({ default: 0 })
+  price: number;
+
+  @Column({ default: 0 })
+  quantity: number;
+
+  @Column({ default: 0 })
+  total: number;
+
+  @Column()
+  productName: string;
+
+  @Column()
+  supplierName: string;
 }
