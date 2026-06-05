@@ -42,4 +42,7 @@ export class Delivery extends GenericEntity {
 
   @Column()
   customerName: string;
+
+  @Column({ nullable: true })
+  description: string;
 }

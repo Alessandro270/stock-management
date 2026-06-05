@@ -12,10 +12,25 @@ import {
 import { DeliveryStatus } from 'src/common/enums/delivery-status.dto';
 
 export class CreateDeliveryDto {
-  @IsUUID()
   @IsString()
   @IsNotEmpty()
-  customerId: string;
+  customerName: string;
+
+  @IsString()
+  @IsOptional()
+  customerEmail: string;
+
+  @IsString()
+  @IsNotEmpty()
+  customerPhone: string;
+
+  @IsString()
+  @IsNotEmpty()
+  customerAddress: string;
+
+  @IsString()
+  @IsOptional()
+  description: string;
 
   @IsDateString()
   @IsNotEmpty()

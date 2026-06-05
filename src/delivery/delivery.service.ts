@@ -23,8 +23,17 @@ export class DeliveryService extends GenericService<Delivery> {
     const product = await this.productService.findOne(dto.productId);
     if (!product) throw new NotFoundException('Produto não encontrado!');
 
-    const customer = await this.customerService.findOne(dto.customerId);
-    if (!customer) throw new NotFoundException('Cliente não encontrado!');
+    let customer = await this.customerService.findOneBy({
+      name: dto.customerName,
+    });
+    if (!customer) {
+      customer = await this.customerService.create({
+        name: dto.customerName,
+        address: dto.customerAddress,
+        email: dto.customerEmail,
+        phone: dto.customerPhone,
+      });
+    }
     const supplier = await this.supplierService.findOne(product.supplier);
 
     const delivery = this.repository.create({
