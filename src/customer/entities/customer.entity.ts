@@ -8,7 +8,13 @@ export class Customer extends GenericEntity {
   @Column()
   name: string;
 
+  @Column({ nullable: true })
+  email: string;
+
   @Column()
+  phone: string;
+
+  @Column({ nullable: true })
   address: string;
 
   @OneToMany(() => Delivery, delivery => delivery.customer)
