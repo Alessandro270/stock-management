@@ -40,7 +40,12 @@ export class AuthService {
 
   async validateToken(dto: ValidateTokenDto) {
     try {
-      return await this.jwtService.verifyAsync(dto.token);
+      const payload = await this.jwtService.verifyAsync(dto.token);
+      const user = await this.userService.findOne(payload.sub);
+      if (!user) throw new BadRequestException('Token inválido!');
+      if (user.refreshToken === dto.token)
+        throw new BadRequestException('Token inválido!');
+      return user;
     } catch (e) {
       throw new BadRequestException('Invalid token');
     }

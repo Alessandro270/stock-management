@@ -1,5 +1,5 @@
 import { Category } from 'src/category/entities/category.entity';
-import { DeliveryDetail } from 'src/delivery/entities/delivery-details.entity';
+import { Delivery } from 'src/delivery/entities/delivery.entity';
 import { GenericEntity } from 'src/generic/generic.entity';
 import { Order } from 'src/order/entities/order.entity';
 import { Stock } from 'src/stock/entities/stock.entity';
@@ -54,8 +54,8 @@ export class Product extends GenericEntity {
   @OneToMany(() => Stock, stock => stock.product)
   stocks: Stock[];
 
-  @OneToMany(() => DeliveryDetail, deliveryDetails => deliveryDetails.product)
-  deliveryDetails: DeliveryDetail[];
+  @OneToMany(() => Delivery, deliveries => deliveries.product)
+  deliveries: Delivery[];
 
   @OneToMany(() => Transfer, transfer => transfer.product)
   transfers: Transfer[];
