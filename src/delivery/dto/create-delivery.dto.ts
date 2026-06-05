@@ -26,7 +26,7 @@ export class CreateDeliveryDto {
 
   @IsString()
   @IsNotEmpty()
-  customerAddress: string;
+  address: string;
 
   @IsString()
   @IsOptional()

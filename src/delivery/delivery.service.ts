@@ -29,7 +29,7 @@ export class DeliveryService extends GenericService<Delivery> {
     if (!customer) {
       customer = await this.customerService.create({
         name: dto.customerName,
-        address: dto.customerAddress,
+        address: dto.address,
         email: dto.customerEmail,
         phone: dto.customerPhone,
       });
@@ -41,6 +41,7 @@ export class DeliveryService extends GenericService<Delivery> {
       supplierName: supplier?.name,
       customerName: customer.name,
       productName: product.name,
+      total: product.salePrice * dto.quantity,
       customer,
       product,
     });
