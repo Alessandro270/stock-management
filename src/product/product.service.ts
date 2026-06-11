@@ -24,7 +24,13 @@ export class ProductService extends GenericService<Product> {
     if (!category) throw new NotFoundException('Categoria nao encontrada');
     if (!supplier) throw new NotFoundException('Fornecedor nao encontrado');
 
-    const product = this.repository.create({ ...dto, category, supplier });
+    const product = this.repository.create({
+      ...dto,
+      category,
+      supplier,
+      supplierName: supplier.name,
+      categoryName: category.name,
+    });
     await this.repository.save(product);
     return product;
   }

@@ -6,10 +6,16 @@ import { Product } from 'src/product/entities/product.entity';
 
 @Entity('orders')
 export class Order extends GenericEntity {
-  @ManyToOne(() => Supplier, supplier => supplier.orders)
+  @ManyToOne(() => Supplier, supplier => supplier.orders, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
   supplier: Supplier;
 
-  @ManyToOne(() => Product, product => product.orders)
+  @ManyToOne(() => Product, product => product.orders, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
   product: Product;
 
   @Column()

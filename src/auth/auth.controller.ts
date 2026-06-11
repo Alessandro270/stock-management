@@ -26,6 +26,7 @@ export class AuthController {
     return payload;
   }
 
+  // @Public()
   @Roles(Role.ADMIN)
   @Post('signup')
   async signup(@Body() dto: CreateUserDto) {

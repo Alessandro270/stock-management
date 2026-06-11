@@ -4,6 +4,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
+  IsPhoneNumber,
   IsPositive,
   IsString,
 } from 'class-validator';
@@ -25,6 +26,11 @@ export class CreateWarehouseDto {
   @IsString()
   @IsOptional()
   address: string;
+
+  @IsString()
+  @IsPhoneNumber()
+  @IsOptional()
+  phone: string;
 
   @IsNumber()
   @IsPositive()

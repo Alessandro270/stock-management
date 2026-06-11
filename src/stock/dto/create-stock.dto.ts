@@ -19,9 +19,6 @@ export class CreateStockDto {
   @IsNotEmpty()
   maximumStock: number;
 
-  @IsNumber()
-  @IsNotEmpty()
-  reorderQuantity: number;
 
   @IsUUID()
   @IsString()

@@ -12,13 +12,19 @@ export class Product extends GenericEntity {
   @Column()
   name: string;
 
-  @ManyToOne(() => Supplier, supplier => supplier.products)
+  @ManyToOne(() => Supplier, supplier => supplier.products, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
   supplier: Supplier;
 
   @OneToMany(() => Order, order => order.product)
   orders: Order[];
 
-  @ManyToOne(() => Category, category => category.products, { nullable: false })
+  @ManyToOne(() => Category, category => category.products, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
   category: Category;
 
   @Column()
@@ -50,6 +56,12 @@ export class Product extends GenericEntity {
 
   @Column({ nullable: true })
   sku: string;
+
+  @Column({ nullable: true })
+  categoryName: string;
+
+  @Column({ nullable: true })
+  supplierName: string;
 
   @OneToMany(() => Stock, stock => stock.product)
   stocks: Stock[];

@@ -9,7 +9,10 @@ export class Delivery extends GenericEntity {
   @ManyToOne(() => Customer, customer => customer.deliveries)
   customer: Customer;
 
-  @ManyToOne(() => Product, product => product.orders)
+  @ManyToOne(() => Product, product => product.orders, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
   product: Product;
 
   @Column()
@@ -42,6 +45,12 @@ export class Delivery extends GenericEntity {
 
   @Column()
   customerName: string;
+
+  @Column()
+  customerEmail: string;
+
+  @Column()
+  customerPhone: string;
 
   @Column()
   address: string;

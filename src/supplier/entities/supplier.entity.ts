@@ -22,7 +22,4 @@ export class Supplier extends GenericEntity {
 
   @OneToMany(() => Product, product => product.supplier)
   products: Product[];
-
-  @OneToMany(() => Order, order => order.supplier)
-  Orders: Order[];
 }

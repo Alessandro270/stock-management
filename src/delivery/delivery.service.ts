@@ -7,6 +7,7 @@ import { CreateDeliveryDto } from './dto/create-delivery.dto';
 import { ProductService } from 'src/product/product.service';
 import { CustomerService } from 'src/customer/customer.service';
 import { SupplierService } from 'src/supplier/supplier.service';
+import { UpdateDeliveryDto } from './dto/update-delivery.dto';
 
 @Injectable()
 export class DeliveryService extends GenericService<Delivery> {
@@ -41,11 +42,39 @@ export class DeliveryService extends GenericService<Delivery> {
       supplierName: supplier?.name,
       customerName: customer.name,
       productName: product.name,
+      customerEmail: dto.customerEmail,
+      customerPhone: dto.customerPhone,
       total: product.salePrice * dto.quantity,
       customer,
       product,
     });
     await this.repository.save(delivery);
     return delivery;
+  }
+
+  override async update(
+    id: string,
+    dto: UpdateDeliveryDto,
+  ): Promise<ObjectLiteral | null> {
+    const oldDelivery = await this.findOne(id);
+    if (!oldDelivery) throw new NotFoundException('Entrega não encontrada');
+    const product = dto.productId
+      ? await this.productService.findOne(dto.productId)
+      : undefined;
+
+    const newDelivery = {
+      ...oldDelivery,
+      ...dto,
+      supplierName: product?.supplier?.name,
+      productName: product?.name,
+      total:
+        dto.quantity && product?.salePrice
+          ? dto.quantity * product?.salePrice
+          : undefined,
+      productId: undefined,
+      product: product ? product : undefined,
+    };
+    await this.repository.update(id, newDelivery);
+    return this.findOne(id);
   }
 }

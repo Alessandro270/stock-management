@@ -12,6 +12,9 @@ export class Warehouse extends GenericEntity {
   @Column()
   email: string;
 
+  @Column({nullable: true})
+  phone: string;
+
   @Column()
   refrigerated: boolean;
 
