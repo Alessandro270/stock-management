@@ -45,6 +45,7 @@ export class DeliveryService extends GenericService<Delivery> {
       customerEmail: dto.customerEmail,
       customerPhone: dto.customerPhone,
       total: product.salePrice * dto.quantity,
+      price: product.salePrice,
       customer,
       product,
     });
@@ -72,6 +73,7 @@ export class DeliveryService extends GenericService<Delivery> {
           ? dto.quantity * product?.salePrice
           : undefined,
       productId: undefined,
+      price: product?.salePrice,
       product: product ? product : undefined,
     };
     await this.repository.update(id, newDelivery);
