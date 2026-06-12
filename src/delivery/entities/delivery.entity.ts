@@ -40,7 +40,7 @@ export class Delivery extends GenericEntity {
   @Column()
   productName: string;
 
-  @Column()
+  @Column({nullable: true})
   supplierName: string;
 
   @Column()

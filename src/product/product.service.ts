@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
 import { CategoryService } from 'src/category/category.service';
 import { SupplierService } from 'src/supplier/supplier.service';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 @Injectable()
 export class ProductService extends GenericService<Product> {
@@ -17,6 +18,7 @@ export class ProductService extends GenericService<Product> {
   ) {
     super(repository);
   }
+
   override async create(dto: CreateProductDto): Promise<ObjectLiteral> {
     const category = await this.categoryService.findOne(dto.categoryId);
     const supplier = await this.supplierService.findOne(dto.supplierId);
@@ -33,5 +35,27 @@ export class ProductService extends GenericService<Product> {
     });
     await this.repository.save(product);
     return product;
+  }
+
+  async update(
+    id: string,
+    dto: UpdateProductDto,
+  ): Promise<ObjectLiteral | null> {
+    const category =
+      (await this.categoryService.findOne(dto.categoryId ?? '')) ?? undefined;
+    const supplier =
+      (await this.supplierService.findOne(dto.supplierId ?? '')) ?? undefined;
+
+    const product = {
+      ...dto,
+      category,
+      supplier,
+      supplierName: supplier?.name ?? undefined,
+      categoryName: category?.name ?? undefined,
+      supplierId: undefined,
+      categoryId: undefined,
+    };
+    await this.repository.update(id, product);
+    return this.findOne(id);
   }
 }
