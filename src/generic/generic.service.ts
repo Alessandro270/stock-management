@@ -24,7 +24,7 @@ export class GenericService<T extends ObjectLiteral> {
   }
 
   findOneBy(filter: Record<string, any>): Promise<ObjectLiteral | null> {
-    return this.repository.findOneBy({ ...filter } as any);
+    return this.repository.findOne({ where: { ...filter } as any });
   }
 
   findOneWithRelations(

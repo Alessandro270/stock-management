@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { GenericService } from 'src/generic/generic.service';
 import { Product } from './entities/product.entity';
 import { ObjectLiteral, Repository } from 'typeorm';
@@ -7,6 +11,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { CategoryService } from 'src/category/category.service';
 import { SupplierService } from 'src/supplier/supplier.service';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { FileUploadService } from 'src/file-upload/file-upload.service';
 
 @Injectable()
 export class ProductService extends GenericService<Product> {
@@ -15,8 +20,30 @@ export class ProductService extends GenericService<Product> {
     protected readonly repository: Repository<Product>,
     private readonly categoryService: CategoryService,
     private readonly supplierService: SupplierService,
+    private readonly fileUploadService: FileUploadService,
   ) {
     super(repository);
+  }
+
+  async upload(file: any) {
+    const data: any[] = this.fileUploadService.convertToJson(file);
+
+    for (const product of data) {
+      const supplier = await this.supplierService.findOneBy({
+        name: product.supplier,
+      });
+      const category = await this.categoryService.findOneBy({
+        name: product.category,
+      });
+
+      await this.create({
+        ...product,
+        categoryId: category?.id,
+        supplierId: supplier?.id,
+        supplier: undefined,
+        category: undefined,
+      });
+    }
   }
 
   override async create(dto: CreateProductDto): Promise<ObjectLiteral> {
@@ -25,6 +52,9 @@ export class ProductService extends GenericService<Product> {
 
     if (!category) throw new NotFoundException('Categoria nao encontrada');
     if (!supplier) throw new NotFoundException('Fornecedor nao encontrado');
+    const prevProduct = await this.findOneBy({ name: dto.name });
+
+    if (prevProduct) throw new BadRequestException('Produto já existente');
 
     const product = this.repository.create({
       ...dto,

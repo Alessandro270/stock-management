@@ -7,14 +7,23 @@ import {
   Param,
   Delete,
   ParseUUIDPipe,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
+
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file'))
+  upload(@UploadedFile() createProductDto: CreateProductDto) {
+    return this.productService.upload(createProductDto);
+  }
 
   @Post()
   create(@Body() createProductDto: CreateProductDto) {

@@ -68,11 +68,10 @@ export class StockService extends GenericService<Stock> {
       });
 
       return await this.findOne(stock.id);
-    } else {
-      const newStock = this.repository.create({ ...dto, product, warehouse });
-      await this.repository.save(newStock);
-      return newStock;
     }
+    const newStock = this.repository.create({ ...dto, product, warehouse });
+    await this.repository.save(newStock);
+    return newStock;
   }
 
   override async update(
