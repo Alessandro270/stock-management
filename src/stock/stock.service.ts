@@ -7,7 +7,7 @@ import { CreateStockDto } from './dto/create-stock.dto';
 import { ProductService } from 'src/product/product.service';
 import { WarehouseService } from 'src/warehouse/warehouse.service';
 import { UpdateStockDto } from './dto/update-stock.dto';
-import { urlToHttpOptions } from 'url';
+import { FileUploadService } from 'src/file-upload/file-upload.service';
 
 @Injectable()
 export class StockService extends GenericService<Stock> {
@@ -16,20 +16,63 @@ export class StockService extends GenericService<Stock> {
     protected readonly repository: Repository<Stock>,
     private readonly productService: ProductService,
     private readonly warehouseService: WarehouseService,
+    private readonly fileUploadService: FileUploadService,
   ) {
     super(repository);
   }
 
-  override async create(dto: CreateStockDto): Promise<ObjectLiteral> {
+  async upload(file: any) {
+    const data: any[] = this.fileUploadService.convertToJson(file);
+
+    for (const stock of data) {
+      const product = await this.productService.findOneBy({
+        name: stock.product,
+      });
+      const warehouse = await this.warehouseService.findOneBy({
+        name: stock.warehouse,
+      });
+
+      await this.create({
+        ...stock,
+        productId: product?.id,
+        warehouseId: warehouse?.id,
+      });
+    }
+
+    return { message: 'Ficheiro carregado com sucesso!' };
+  }
+
+  override async create(dto: CreateStockDto): Promise<ObjectLiteral | null> {
     const product = await this.productService.findOne(dto.productId);
     const warehouse = await this.warehouseService.findOne(dto.warehouseId);
 
     if (!product) throw new NotFoundException('Produto nao encontrado');
     if (!warehouse) throw new NotFoundException('Armazem nao encontrado');
 
-    const stock = this.repository.create({ ...dto, product, warehouse });
-    await this.repository.save(stock);
-    return stock;
+    const qb = this.repository.createQueryBuilder('stock');
+    const stock = await qb
+      .leftJoinAndSelect('stock.product', 'product')
+      .leftJoinAndSelect('stock.warehouse', 'warehouse')
+      .where('product.id = :productId', {
+        productId: product.id,
+      })
+      .andWhere('warehouse.id = :warehouseId', {
+        warehouseId: warehouse.id,
+      })
+      .getOne();
+
+    if (stock) {
+      await this.repository.update(stock.id, {
+        quantity: stock.quantity + dto.quantity,
+        warehouse,
+      });
+
+      return await this.findOne(stock.id);
+    } else {
+      const newStock = this.repository.create({ ...dto, product, warehouse });
+      await this.repository.save(newStock);
+      return newStock;
+    }
   }
 
   override async update(

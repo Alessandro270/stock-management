@@ -17,6 +17,7 @@ import { TransferModule } from './transfer/transfer.module';
 import { LocationModule } from './location/location.module';
 import { WarehouseModule } from './warehouse/warehouse.module';
 import { CategoryModule } from './category/category.module';
+import { FileUploadModule } from './file-upload/file-upload.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { CategoryModule } from './category/category.module';
     TransferModule,
     LocationModule,
     WarehouseModule,
+    FileUploadModule,
   ],
   controllers: [AppController],
   providers: [

@@ -5,7 +5,7 @@ import { DeepPartial, ObjectLiteral, Repository } from 'typeorm';
 export class GenericService<T extends ObjectLiteral> {
   constructor(protected readonly repository: Repository<T>) {}
 
-  async create(data: DeepPartial<T>): Promise<ObjectLiteral> {
+  async create(data: DeepPartial<T>): Promise<ObjectLiteral | null> {
     const entity = this.repository.create(data);
     await this.repository.save(entity);
     return entity;
@@ -13,7 +13,7 @@ export class GenericService<T extends ObjectLiteral> {
   findAll(relations?: string[] | []): Promise<ObjectLiteral[]> | [] {
     return this.repository.find({ relations });
   }
-  
+
   findOne(id: string, relations?: string[]): Promise<ObjectLiteral | null> {
     const qb = this.repository.createQueryBuilder('entity');
     qb.where({ id });

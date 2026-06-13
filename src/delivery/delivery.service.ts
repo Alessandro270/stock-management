@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { Delivery } from './entities/delivery.entity';
 import { GenericService } from 'src/generic/generic.service';
 import { ObjectLiteral, Repository } from 'typeorm';
@@ -34,6 +38,9 @@ export class DeliveryService extends GenericService<Delivery> {
         email: dto.customerEmail,
         phone: dto.customerPhone,
       });
+      throw new InternalServerErrorException(
+        'Não foi possível criar um cliente',
+      );
     }
     const supplier = await this.supplierService.findOne(product.supplier);
 

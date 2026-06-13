@@ -87,7 +87,10 @@ export class AuthService {
         ...dto,
         password: hashedPassword,
       });
-
+      if (!newUser)
+        throw new InternalServerErrorException(
+          'Não foi possível criar um utilizador',
+        );
       newUser.refreshToken = await this.jwtService.signAsync(
         { sub: newUser.id, email: newUser.email },
         { expiresIn: '7d' },
