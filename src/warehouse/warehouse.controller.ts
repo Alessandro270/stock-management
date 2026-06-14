@@ -7,14 +7,23 @@ import {
   Param,
   Delete,
   ParseUUIDPipe,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { WarehouseService } from './warehouse.service';
 import { CreateWarehouseDto } from './dto/create-warehouse.dto';
 import { UpdateWarehouseDto } from './dto/update-warehouse.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('warehouse')
 export class WarehouseController {
   constructor(private readonly warehouseService: WarehouseService) {}
+
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file'))
+  upload(@UploadedFile() file: any) {
+    return this.warehouseService.upload(file);
+  }
 
   @Post()
   create(@Body() createWarehouseDto: CreateWarehouseDto) {

@@ -6,14 +6,23 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { SupplierService } from './supplier.service';
 import { CreateSupplierDto } from './dto/create-supplier.dto';
 import { UpdateSupplierDto } from './dto/update-supplier.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('supplier')
 export class SupplierController {
   constructor(private readonly supplierService: SupplierService) {}
+
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file'))
+  upload(@UploadedFile() file: any) {
+    return this.supplierService.upload(file);
+  }
 
   @Post()
   create(@Body() createSupplierDto: CreateSupplierDto) {

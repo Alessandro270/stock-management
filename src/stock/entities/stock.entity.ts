@@ -14,13 +14,14 @@ export class Stock extends GenericEntity {
   @Column()
   maximumStock: number;
 
-
   @ManyToOne(() => Product, product => product.stocks, {
     nullable: false,
     onDelete: 'CASCADE',
   })
   product: Product;
 
-  @ManyToOne(() => Warehouse, warehouse => warehouse.stocks)
+  @ManyToOne(() => Warehouse, warehouse => warehouse.stocks, {
+    onDelete: 'SET NULL',
+  })
   warehouse: Warehouse;
 }

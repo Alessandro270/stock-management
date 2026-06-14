@@ -4,9 +4,10 @@ import { SupplierController } from './supplier.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Supplier } from './entities/supplier.entity';
 import { Order } from 'src/order/entities/order.entity';
+import { FileUploadModule } from 'src/file-upload/file-upload.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Supplier, Order])],
+  imports: [FileUploadModule, TypeOrmModule.forFeature([Supplier, Order])],
   controllers: [SupplierController],
   providers: [SupplierService],
   exports: [SupplierService],
