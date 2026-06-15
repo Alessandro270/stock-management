@@ -10,7 +10,7 @@ export class SupplierService extends GenericService<Supplier> {
   constructor(
     @InjectRepository(Supplier)
     protected readonly repository: Repository<Supplier>,
-    private readonly fileUploadService: FileUploadService
+    private readonly fileUploadService: FileUploadService,
   ) {
     super(repository);
   }

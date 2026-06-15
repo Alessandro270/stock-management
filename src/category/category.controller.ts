@@ -9,6 +9,7 @@ import {
   ParseUUIDPipe,
   UploadedFile,
   UseInterceptors,
+  Res,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -16,10 +17,32 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Role } from 'src/common/enums/role.enum';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { FileUploadService } from 'src/file-upload/file-upload.service';
 
 @Controller('category')
 export class CategoryController {
-  constructor(private readonly categoryService: CategoryService) {}
+  constructor(
+    private readonly categoryService: CategoryService,
+    private readonly fileUploadService: FileUploadService,
+  ) {}
+  @Get('export')
+  async export(@Res() res) {
+    const categories = await this.categoryService.findAll();
+
+    const workbook = await this.fileUploadService.convertToExcel(categories);
+
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+
+    res.setHeader(
+      'Content-Disposition',
+      'attachment; filename=categories.xlsx',
+    );
+    await workbook.xlsx.write(res);
+    res.end();
+  }
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))

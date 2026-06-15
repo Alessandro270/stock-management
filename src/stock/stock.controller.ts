@@ -9,15 +9,35 @@ import {
   ParseUUIDPipe,
   UseInterceptors,
   UploadedFile,
+  Res,
 } from '@nestjs/common';
 import { StockService } from './stock.service';
 import { CreateStockDto } from './dto/create-stock.dto';
 import { UpdateStockDto } from './dto/update-stock.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { FileUploadService } from 'src/file-upload/file-upload.service';
 
 @Controller('stock')
 export class StockController {
-  constructor(private readonly stockService: StockService) {}
+  constructor(
+    private readonly stockService: StockService,
+    private readonly fileUploadService: FileUploadService,
+  ) {}
+  @Get('export')
+  async export(@Res() res) {
+    const stock = await this.stockService.findAll();
+
+    const workbook = await this.fileUploadService.convertToExcel(stock);
+
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+
+    res.setHeader('Content-Disposition', 'attachment; filename=stock.xlsx');
+    await workbook.xlsx.write(res);
+    res.end();
+  }
 
   @Post()
   create(@Body() createStockDto: CreateStockDto) {

@@ -13,8 +13,7 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from 'src/common/enums/role.enum';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
-import {UpdateUserDto} from './dto/update-user.dto'
-
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('user')
 @UseGuards(RolesGuard)
@@ -29,7 +28,13 @@ export class UserController {
 
   @Get('me')
   getUser(@CurrentUser() user: any) {
-    return this.service.findOne(user.id);
+    return this.service.findOne(user.sub);
+  }
+
+  @Patch('me')
+  updateUserInfo(@CurrentUser() user: any, @Body() dto: UpdateUserDto) {
+    console.log(user, dto);
+    return this.service.update(user.sub, { ...dto });
   }
 
   @Roles(Role.ADMIN)

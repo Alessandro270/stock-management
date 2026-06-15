@@ -11,6 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { ValidateTokenDto } from './dto/validate-token.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { ResetPasswordDto } from './dto/resetPassword.dto';
 
 @Injectable()
 export class AuthService {
@@ -77,6 +78,25 @@ export class AuthService {
       refreshToken,
     };
   }
+  async resetPassword(currentUser: any, dto: ResetPasswordDto) {
+    if (dto.newPassword !== dto.confirmPassword)
+      throw new BadRequestException('As palavras-passe não coincidem');
+    const user = await this.userService.findOneWithPassword({
+      id: currentUser.sub,
+    });
+
+    if (!user) throw new UnauthorizedException('Token inválido ou expirado!');
+
+    const isValid = await bcrypt.compare(dto.password, user.password);
+
+    if (!isValid)
+      throw new UnauthorizedException('Palavra-passe atual incorreta');
+    const newPassword = await this.hashPassword(dto.newPassword);
+
+    await this.userService.update(user.id, { password: newPassword });
+    return { message: 'Senha atualizada com sucesso!' };
+  }
+
   async signup(dto: CreateUserDto) {
     const user = await this.userService.findOneBy({ email: dto.email });
     if (user) return null;

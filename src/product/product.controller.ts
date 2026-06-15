@@ -9,15 +9,35 @@ import {
   ParseUUIDPipe,
   UploadedFile,
   UseInterceptors,
+  Res,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { FileUploadService } from 'src/file-upload/file-upload.service';
 
 @Controller('product')
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(
+    private readonly productService: ProductService,
+    private readonly fileUploadService: FileUploadService,
+  ) {}
+  @Get('export')
+  async export(@Res() res) {
+    const products = await this.productService.findAll();
+
+    const workbook = await this.fileUploadService.convertToExcel(products);
+
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+
+    res.setHeader('Content-Disposition', 'attachment; filename=suppliers.xlsx');
+    await workbook.xlsx.write(res);
+    res.end();
+  }
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))

@@ -9,16 +9,38 @@ import {
   ParseUUIDPipe,
   UseInterceptors,
   UploadedFile,
+  Res,
 } from '@nestjs/common';
 import { WarehouseService } from './warehouse.service';
 import { CreateWarehouseDto } from './dto/create-warehouse.dto';
 import { UpdateWarehouseDto } from './dto/update-warehouse.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { FileUploadService } from 'src/file-upload/file-upload.service';
 
 @Controller('warehouse')
 export class WarehouseController {
-  constructor(private readonly warehouseService: WarehouseService) {}
+  constructor(
+    private readonly warehouseService: WarehouseService,
+    private readonly fileUploadService: FileUploadService,
+  ) {}
+  @Get('export')
+  async export(@Res() res) {
+    const warehouses = await this.warehouseService.findAll();
 
+    const workbook = this.fileUploadService.convertToExcel(warehouses);
+
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+
+    res.setHeader(
+      'Content-Disposition',
+      'attachment; filename=warehouses.xlsx',
+    );
+    await workbook.xlsx.write(res);
+    res.end();
+  }
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   upload(@UploadedFile() file: any) {

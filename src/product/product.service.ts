@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { GenericService } from 'src/generic/generic.service';
 import { Product } from './entities/product.entity';
 import { ObjectLiteral, Repository } from 'typeorm';
@@ -38,6 +34,7 @@ export class ProductService extends GenericService<Product> {
 
       await this.create({
         ...product,
+        refrigerated: product.refrigerated ? true : false,
         categoryId: category?.id,
         supplierId: supplier?.id,
         supplier: undefined,
@@ -50,8 +47,8 @@ export class ProductService extends GenericService<Product> {
     const category = await this.categoryService.findOne(dto.categoryId);
     const supplier = await this.supplierService.findOne(dto.supplierId);
 
-    if (!category) throw new NotFoundException('Categoria nao encontrada');
-    if (!supplier) throw new NotFoundException('Fornecedor nao encontrado');
+    if (!category) throw new BadRequestException('Categoria nao encontrada');
+    if (!supplier) throw new BadRequestException('Fornecedor nao encontrado');
     const prevProduct = await this.findOneBy({ name: dto.name });
 
     if (prevProduct) throw new BadRequestException('Produto já existente');

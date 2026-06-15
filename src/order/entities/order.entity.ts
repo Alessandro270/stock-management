@@ -22,7 +22,7 @@ export class Order extends GenericEntity {
   expectedDate: Date;
 
   @Column({ nullable: true })
-  actualDate: Date;
+  actualDate?: Date;
 
   @Column({ type: 'enum', enum: OrderStatus, default: OrderStatus.PENDING })
   status: OrderStatus;

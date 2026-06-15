@@ -60,6 +60,7 @@ export class StockService extends GenericService<Stock> {
         warehouseId: warehouse.id,
       })
       .getOne();
+    console.log(stock);
 
     if (stock) {
       await this.repository.update(stock.id, {

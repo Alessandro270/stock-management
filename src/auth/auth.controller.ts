@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Patch,
   Post,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -13,6 +14,8 @@ import { ValidateTokenDto } from './dto/validate-token.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from 'src/common/enums/role.enum';
+import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { ResetPasswordDto } from './dto/resetPassword.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -33,6 +36,11 @@ export class AuthController {
     const result = await this.service.signup(dto);
     if (!result) throw new UnauthorizedException('Email already in use');
     return result;
+  }
+
+  @Post('reset-password')
+  resetPassword(@Body() dto: ResetPasswordDto, @CurrentUser() user: any) {
+    return this.service.resetPassword(user, dto);
   }
 
   @Public()
