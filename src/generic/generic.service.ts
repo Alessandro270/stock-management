@@ -10,8 +10,30 @@ export class GenericService<T extends ObjectLiteral> {
     await this.repository.save(entity);
     return entity;
   }
-  findAll(relations?: string[] | []): Promise<ObjectLiteral[]> | [] {
-    return this.repository.find({ relations });
+
+  findAll(
+    relations?: string[],
+    filter?: Record<string, any>,
+  ): Promise<ObjectLiteral[]> {
+    const query = this.repository.createQueryBuilder('entity');
+
+    relations?.forEach((relation, idx) => {
+      query.leftJoinAndSelect(`entity.${relation}`, relation);
+    });
+
+    Object.entries(filter || {}).forEach(([key, value]) => {
+      if (!value) return;
+      if (typeof value === 'string' && value.includes('%')) {
+        query.andWhere(`entity.${key} LIKE :${key}`, {
+          [key]: value,
+        });
+      } else {
+        query.andWhere(`entity.${key} = :${key}`, {
+          [key]: value,
+        });
+      }
+    });
+    return query.getMany();
   }
 
   findOne(id: string, relations?: string[]): Promise<ObjectLiteral | null> {

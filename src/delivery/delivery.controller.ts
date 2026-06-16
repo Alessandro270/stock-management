@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { DeliveryService } from './delivery.service';
 import { CreateDeliveryDto } from './dto/create-delivery.dto';
@@ -21,8 +22,8 @@ export class DeliveryController {
   }
 
   @Get()
-  findAll() {
-    return this.deliveryService.findAll();
+  findAll(@Query('_id') id: string) {
+    return this.deliveryService.findAll(['product'], { _id: id });
   }
 
   @Get(':id')
