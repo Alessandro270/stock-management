@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { GenericService } from 'src/generic/generic.service';
 import { Stock } from './entities/stock.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -43,6 +47,10 @@ export class StockService extends GenericService<Stock> {
   }
 
   override async create(dto: CreateStockDto): Promise<ObjectLiteral | null> {
+    if (dto.minimumStock > dto.maximumStock)
+      throw new BadRequestException(
+        'Stock mínimo deve ser maior ou igual ao stock máximo',
+      );
     const product = await this.productService.findOne(dto.productId);
     const warehouse = await this.warehouseService.findOne(dto.warehouseId);
 
@@ -60,7 +68,6 @@ export class StockService extends GenericService<Stock> {
         warehouseId: warehouse.id,
       })
       .getOne();
-    console.log(stock);
 
     if (stock) {
       await this.repository.update(stock.id, {
@@ -71,6 +78,7 @@ export class StockService extends GenericService<Stock> {
       return await this.findOne(stock.id);
     }
     const newStock = this.repository.create({ ...dto, product, warehouse });
+
     await this.repository.save(newStock);
     return newStock;
   }
@@ -79,6 +87,14 @@ export class StockService extends GenericService<Stock> {
     id: string,
     dto: UpdateStockDto,
   ): Promise<ObjectLiteral | null> {
+    if (
+      dto.minimumStock &&
+      dto.maximumStock &&
+      dto.minimumStock > dto.maximumStock
+    )
+      throw new BadRequestException(
+        'Stock mínimo deve ser maior ou igual ao stock máximo',
+      );
     const product = dto.productId
       ? await this.productService.findOne(dto.productId)
       : undefined;
@@ -95,7 +111,7 @@ export class StockService extends GenericService<Stock> {
     };
     await this.repository.update(id, stock);
     const res = await this.findOne(id, ['warehouse', 'product']);
-    console.log(res, stock);
+
     return res;
   }
 }

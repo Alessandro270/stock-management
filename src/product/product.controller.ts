@@ -10,12 +10,15 @@ import {
   UploadedFile,
   UseInterceptors,
   Res,
+  Query,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileUploadService } from 'src/file-upload/file-upload.service';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { Role } from 'src/common/enums/role.enum';
 
 @Controller('product')
 export class ProductController {
@@ -51,8 +54,8 @@ export class ProductController {
   }
 
   @Get()
-  findAll() {
-    return this.productService.findAll(['category']);
+  findAll(@Query('_id') _id: string) {
+    return this.productService.findAll(['category'], { _id });
   }
 
   @Get(':id')
@@ -63,6 +66,7 @@ export class ProductController {
     ]);
   }
 
+  @Roles(Role.ADMIN)
   @Patch(':id')
   update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -71,6 +75,7 @@ export class ProductController {
     return this.productService.update(id, updateProductDto);
   }
 
+  @Roles(Role.ADMIN)
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.productService.remove(id);

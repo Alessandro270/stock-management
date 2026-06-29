@@ -9,6 +9,7 @@ import {
   UseInterceptors,
   UploadedFile,
   Res,
+  Query,
 } from '@nestjs/common';
 import { SupplierService } from './supplier.service';
 import { CreateSupplierDto } from './dto/create-supplier.dto';
@@ -16,6 +17,8 @@ import { UpdateSupplierDto } from './dto/update-supplier.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import { FileUploadService } from 'src/file-upload/file-upload.service';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { Role } from 'src/common/enums/role.enum';
 
 @Controller('supplier')
 export class SupplierController {
@@ -52,8 +55,8 @@ export class SupplierController {
   }
 
   @Get()
-  findAll() {
-    return this.supplierService.findAll();
+  findAll(@Query('_id') _id: string) {
+    return this.supplierService.findAll([], { _id });
   }
 
   @Get(':id')
@@ -61,6 +64,7 @@ export class SupplierController {
     return this.supplierService.findOne(id);
   }
 
+  @Roles(Role.ADMIN)
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -69,6 +73,7 @@ export class SupplierController {
     return this.supplierService.update(id, updateSupplierDto);
   }
 
+  @Roles(Role.ADMIN)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.supplierService.remove(id);

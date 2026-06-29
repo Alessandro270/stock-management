@@ -4,7 +4,6 @@ import { GenericEntity } from 'src/generic/generic.entity';
 import { Order } from 'src/order/entities/order.entity';
 import { Stock } from 'src/stock/entities/stock.entity';
 import { Supplier } from 'src/supplier/entities/supplier.entity';
-import { Transfer } from 'src/transfer/entities/transfer.entity';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 
 @Entity()
@@ -55,9 +54,6 @@ export class Product extends GenericEntity {
   refrigerated: boolean;
 
   @Column({ nullable: true })
-  sku: string;
-
-  @Column({ nullable: true })
   categoryName: string;
 
   @Column({ nullable: true })
@@ -68,7 +64,4 @@ export class Product extends GenericEntity {
 
   @OneToMany(() => Delivery, deliveries => deliveries.product)
   deliveries: Delivery[];
-
-  @OneToMany(() => Transfer, transfer => transfer.product)
-  transfers: Transfer[];
 }

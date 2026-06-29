@@ -24,19 +24,22 @@ export class AuthService {
     return await bcrypt.hash(password, 12);
   }
   async refreshToken(dto: RefreshTokenDto) {
-    const payload = await this.jwtService.verifyAsync(dto.refreshToken);
-    const user = await this.userService.findOneWithPassword({
-      id: payload.sub,
-    });
+    try {
+      const payload = await this.jwtService.verifyAsync(dto.refreshToken);
 
-    if (!user) return null;
+      const user = await this.userService.findOneWithPassword({
+        id: payload.sub,
+      });
 
-    if (user.refreshToken !== dto.refreshToken)
-      throw new BadRequestException('Token invalido');
-    return await this.jwtService.signAsync({
-      sub: user.id,
-      email: user.email,
-    });
+      if (!user) return null;
+
+      if (user.refreshToken !== dto.refreshToken)
+        throw new BadRequestException('Token invalido');
+      return await this.jwtService.signAsync({
+        sub: user.id,
+        email: user.email,
+      });
+    } catch (e) {}
   }
 
   async validateToken(dto: ValidateTokenDto) {
@@ -48,7 +51,7 @@ export class AuthService {
         throw new BadRequestException('Token inválido!');
       return user;
     } catch (e) {
-      throw new BadRequestException('Invalid token');
+      throw new BadRequestException('Token inválido');
     }
   }
   async login(dto: LoginDto) {
@@ -59,14 +62,13 @@ export class AuthService {
 
     const isPasswordValid = await bcrypt.compare(dto.password, user.password);
     if (!isPasswordValid) return null;
-    let refreshToken = user.refreshToken;
-    if (!user.refreshToken) {
-      const refreshToken = await this.jwtService.signAsync(
-        { sub: user.id, email: user.email },
-        { expiresIn: '7d' },
-      );
-      await this.userService.update(user.id, { refreshToken });
-    }
+
+    const refreshToken = await this.jwtService.signAsync(
+      { sub: user.id, email: user.email },
+      { expiresIn: '7d' },
+    );
+
+    await this.userService.update(user.id, { refreshToken });
 
     const token = await this.jwtService.signAsync({
       sub: user.id,
@@ -78,6 +80,7 @@ export class AuthService {
       refreshToken,
     };
   }
+
   async resetPassword(currentUser: any, dto: ResetPasswordDto) {
     if (dto.newPassword !== dto.confirmPassword)
       throw new BadRequestException('As palavras-passe não coincidem');

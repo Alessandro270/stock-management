@@ -39,6 +39,10 @@ export class CreateProductDto {
   @IsNumber()
   width: number;
 
+  @IsOptional()
+  @IsNumber()
+  length: number;
+
   @IsBoolean()
   @IsOptional()
   refrigerated: boolean;

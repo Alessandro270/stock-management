@@ -1,8 +1,7 @@
 import { Delivery } from 'src/delivery/entities/delivery.entity';
 import { GenericEntity } from 'src/generic/generic.entity';
 import { Stock } from 'src/stock/entities/stock.entity';
-import { Transfer } from 'src/transfer/entities/transfer.entity';
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 
 @Entity()
 export class Warehouse extends GenericEntity {
@@ -12,7 +11,7 @@ export class Warehouse extends GenericEntity {
   @Column()
   email: string;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   phone: string;
 
   @Column()
@@ -29,10 +28,4 @@ export class Warehouse extends GenericEntity {
 
   @OneToMany(() => Delivery, delivery => delivery.product)
   deliveries: Delivery[];
-
-  @OneToMany(() => Transfer, transfer => transfer.sourceWarehouse)
-  sourceTransfers: Transfer[];
-
-  @OneToMany(() => Transfer, transfer => transfer.destinationWarehouse)
-  destinationTransfers: Transfer[];
 }

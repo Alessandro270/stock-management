@@ -13,7 +13,6 @@ import { SupplierModule } from './supplier/supplier.module';
 import { OrderModule } from './order/order.module';
 import { CustomerModule } from './customer/customer.module';
 import { DeliveryModule } from './delivery/delivery.module';
-import { TransferModule } from './transfer/transfer.module';
 import { LocationModule } from './location/location.module';
 import { WarehouseModule } from './warehouse/warehouse.module';
 import { CategoryModule } from './category/category.module';
@@ -35,7 +34,6 @@ import { FileUploadModule } from './file-upload/file-upload.module';
     OrderModule,
     CustomerModule,
     DeliveryModule,
-    TransferModule,
     LocationModule,
     WarehouseModule,
     FileUploadModule,

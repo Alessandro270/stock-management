@@ -10,12 +10,15 @@ import {
   UseInterceptors,
   UploadedFile,
   Res,
+  Query,
 } from '@nestjs/common';
 import { StockService } from './stock.service';
 import { CreateStockDto } from './dto/create-stock.dto';
 import { UpdateStockDto } from './dto/update-stock.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileUploadService } from 'src/file-upload/file-upload.service';
+import { Role } from 'src/common/enums/role.enum';
+import { Roles } from 'src/common/decorators/roles.decorator';
 
 @Controller('stock')
 export class StockController {
@@ -27,7 +30,7 @@ export class StockController {
   async export(@Res() res) {
     const stock = await this.stockService.findAll();
 
-    const workbook = await this.fileUploadService.convertToExcel(stock);
+    const workbook = this.fileUploadService.convertToExcel(stock);
 
     res.setHeader(
       'Content-Type',
@@ -51,8 +54,8 @@ export class StockController {
   }
 
   @Get()
-  findAll() {
-    return this.stockService.findAll(['product']);
+  findAll(@Query('_id') _id: string) {
+    return this.stockService.findAll(['product', 'warehouse'], { _id });
   }
 
   @Get(':id')
@@ -60,6 +63,7 @@ export class StockController {
     return this.stockService.findOne(id);
   }
 
+  @Roles(Role.ADMIN)
   @Patch(':id')
   update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -68,6 +72,7 @@ export class StockController {
     return this.stockService.update(id, updateStockDto);
   }
 
+  @Roles(Role.ADMIN)
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.stockService.remove(id);

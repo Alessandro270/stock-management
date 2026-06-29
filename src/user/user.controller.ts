@@ -6,6 +6,7 @@ import {
   Param,
   ParseUUIDPipe,
   Patch,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -22,8 +23,8 @@ export class UserController {
 
   @Roles(Role.ADMIN)
   @Get()
-  findAll() {
-    return this.service.findAll();
+  findAll(@Query('_id') _id: string) {
+    return this.service.findAll([], { _id });
   }
 
   @Get('me')
@@ -33,7 +34,6 @@ export class UserController {
 
   @Patch('me')
   updateUserInfo(@CurrentUser() user: any, @Body() dto: UpdateUserDto) {
-    console.log(user, dto);
     return this.service.update(user.sub, { ...dto });
   }
 

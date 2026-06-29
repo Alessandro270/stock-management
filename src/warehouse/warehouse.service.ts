@@ -16,7 +16,7 @@ export class WarehouseService extends GenericService<Warehouse> {
   }
   async upload(file: any) {
     const rows: any[] = this.fileUploadService.convertToJson(file);
-    console.log(rows);
+
     for (const row of rows)
       await this.create({
         ...row,

@@ -11,6 +11,8 @@ import {
 import { DeliveryService } from './delivery.service';
 import { CreateDeliveryDto } from './dto/create-delivery.dto';
 import { UpdateDeliveryDto } from './dto/update-delivery.dto';
+import { Role } from 'src/common/enums/role.enum';
+import { Roles } from 'src/common/decorators/roles.decorator';
 
 @Controller('delivery')
 export class DeliveryController {
@@ -31,6 +33,7 @@ export class DeliveryController {
     return this.deliveryService.findOne(id, ['product', 'customer']);
   }
 
+  @Roles(Role.ADMIN)
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -39,6 +42,7 @@ export class DeliveryController {
     return this.deliveryService.update(id, updateDeliveryDto);
   }
 
+  @Roles(Role.ADMIN)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.deliveryService.remove(id);
