@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -12,6 +13,8 @@ import { ProductService } from 'src/product/product.service';
 import { CustomerService } from 'src/customer/customer.service';
 import { SupplierService } from 'src/supplier/supplier.service';
 import { UpdateDeliveryDto } from './dto/update-delivery.dto';
+import { StockService } from 'src/stock/stock.service';
+import { DeliveryStatus } from 'src/common/enums/delivery-status.dto';
 
 @Injectable()
 export class DeliveryService extends GenericService<Delivery> {
@@ -21,6 +24,7 @@ export class DeliveryService extends GenericService<Delivery> {
     private readonly productService: ProductService,
     private readonly customerService: CustomerService,
     private readonly supplierService: SupplierService,
+    private readonly stockService: StockService,
   ) {
     super(repository);
   }
@@ -67,9 +71,26 @@ export class DeliveryService extends GenericService<Delivery> {
   ): Promise<ObjectLiteral | null> {
     const oldDelivery = await this.findOne(id);
     if (!oldDelivery) throw new NotFoundException('Entrega não encontrada');
+
     const product = dto.productId
       ? await this.productService.findOne(dto.productId)
       : undefined;
+
+    if (dto.status === DeliveryStatus.COMPLETED) {
+      const stock = await this.stockService.findOneBy({
+        product: { name: oldDelivery.productName },
+      });
+
+      if (!stock) throw new NotFoundException('Estoque esgotado');
+
+      if (oldDelivery.quantity && oldDelivery.quantity > stock.quantity)
+        throw new BadRequestException('Estoque insuficiente');
+
+      const quantity = stock.quantity - oldDelivery.quantity;
+      const res = await this.stockService.update(stock.id, {
+        quantity,
+      });
+    }
 
     const newDelivery = {
       ...oldDelivery,

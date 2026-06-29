@@ -8,8 +8,14 @@ import { ProductModule } from 'src/product/product.module';
 import { FileUploadModule } from 'src/file-upload/file-upload.module';
 
 @Module({
-  imports: [WarehouseModule, FileUploadModule, ProductModule, TypeOrmModule.forFeature([Stock])],
+  imports: [
+    WarehouseModule,
+    FileUploadModule,
+    ProductModule,
+    TypeOrmModule.forFeature([Stock]),
+  ],
   controllers: [StockController],
   providers: [StockService],
+  exports: [StockService],
 })
 export class StockModule {}

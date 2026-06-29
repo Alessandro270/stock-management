@@ -109,6 +109,7 @@ export class StockService extends GenericService<Stock> {
       product: product || undefined,
       warehouse: warehouse || undefined,
     };
+
     await this.repository.update(id, stock);
     const res = await this.findOne(id, ['warehouse', 'product']);
 

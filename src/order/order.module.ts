@@ -6,12 +6,14 @@ import { Order } from './entities/order.entity';
 import { ProductModule } from 'src/product/product.module';
 import { SupplierModule } from 'src/supplier/supplier.module';
 import { FileUploadModule } from 'src/file-upload/file-upload.module';
+import { StockModule } from 'src/stock/stock.module';
 
 @Module({
   imports: [
     ProductModule,
     SupplierModule,
     FileUploadModule,
+    StockModule,
     TypeOrmModule.forFeature([Order]),
   ],
   controllers: [OrderController],
