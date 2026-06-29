@@ -38,9 +38,10 @@ export class DeliveryService extends GenericService<Delivery> {
         email: dto.customerEmail,
         phone: dto.customerPhone,
       });
-      throw new InternalServerErrorException(
-        'Não foi possível criar um cliente',
-      );
+      if (!customer)
+        throw new InternalServerErrorException(
+          'Não foi possível criar um cliente',
+        );
     }
     const supplier = await this.supplierService.findOne(product.supplier);
 

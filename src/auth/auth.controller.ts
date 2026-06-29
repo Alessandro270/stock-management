@@ -2,7 +2,6 @@ import {
   BadRequestException,
   Body,
   Controller,
-  Patch,
   Post,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -25,7 +24,7 @@ export class AuthController {
   @Post('login')
   async login(@Body() dto: LoginDto) {
     const payload = await this.service.login(dto);
-    if (!payload) throw new UnauthorizedException('Invalid credentials');
+    if (!payload) throw new UnauthorizedException('Credenciais inválidas');
     return payload;
   }
 
@@ -47,7 +46,7 @@ export class AuthController {
   @Post('validate-token')
   async validateToken(@Body() dto: ValidateTokenDto) {
     const result = await this.service.validateToken(dto);
-    if (!result) throw new BadRequestException('Invalid Token');
+    if (!result) throw new BadRequestException('Token inválido');
     return result;
   }
 
@@ -55,7 +54,7 @@ export class AuthController {
   @Post('refresh')
   async refresh(@Body() dto: RefreshTokenDto) {
     const token = await this.service.refreshToken(dto);
-    if (!token) throw new BadRequestException('Invalid Token');
+    if (!token) throw new BadRequestException('Token inválido');
     return { token };
   }
 }
